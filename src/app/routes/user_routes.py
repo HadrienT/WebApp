@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Body, Request
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from models import user_model
 from controllers import user_controller
@@ -15,5 +15,5 @@ async def register_page(request: Request) -> HTMLResponse:
 
 # create a new user
 @user_router.post("/register", response_class=HTMLResponse)
-async def new_user(user_request: user_model.UserCreate = Body(...)) -> Response:
+async def new_user(user_request: user_model.UserCreate = Body(...)) -> JSONResponse:
     return await user_controller.register_user(user_request)

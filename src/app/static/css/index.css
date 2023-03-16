@@ -1,0 +1,20 @@
+.navbar {
+    position: relative;
+}
+
+.navbar-toggler {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background-color: #f8f9fa;
+        padding: 10px;
+    }
+}

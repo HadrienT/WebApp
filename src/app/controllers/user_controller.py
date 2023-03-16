@@ -1,5 +1,5 @@
 from bson import ObjectId
-from fastapi import Request, Response, HTTPException
+from fastapi import Request, HTTPException
 from passlib.context import CryptContext
 from fastapi.responses import JSONResponse
 
@@ -41,7 +41,7 @@ def user_to_token_data(user: User) -> dict:
     return {"sub": user.id}
 
 
-async def register_user(user: User) -> Response:
+async def register_user(user: User) -> JSONResponse:
     registered_user = await create_user(user)
     if registered_user:
 
@@ -51,9 +51,7 @@ async def register_user(user: User) -> Response:
         # Create a token for the user
         token = create_access_token(token_data)
 
-        # Create a response object with the token set in the 'Authorization' header
-        response = JSONResponse(content={"message": "Account created successfully"})
-        response.headers["Authorization"] = f"Bearer {token}"
-        return response
+        # Return a JSON response with the token and redirect URL
+        return JSONResponse(content={"token": token, "redirectUrl": "/home"})
     else:
         raise HTTPException(status_code=400, detail="Error creating account.")
