@@ -1,88 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Upload Files</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 50px;
-        }
-
-        label {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        input[type=file] {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #fff;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type=submit] {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        input[type=submit]:hover {
-            background-color: #3e8e41;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My WebApp</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-pzjw8f+ua7Kw1TIq0v8FqFjcJ6pajs/rfdfs3SO+kD4Ck5BdPtF+to8xM6vcktL*" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSGFpoO9mj6+R7e2M6VKWa20YG5AZzaW2J5KOC1prb7IsZJp1zD"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        integrity="sha384-eMNCOe7tC1doHpGoJtKh7z7lGz7fuP4F8nfdFvAOA6Gg/z6Y5J6XqqyGXYM2ntX"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4Ck4SOF4y4Ck4C2DgHfViXydVeLm+JDM"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
-        <label for="images">Select image:</label>
-        <input type="file" id="images" name="images" multiple>
-        <br>
-        <p id="message" style="display: none; color: red;">Please select at least one image.</p>
-        <input type="submit" value="Upload">
-    </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">WebApp</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" id="login-nav">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item" id="register-nav">
+                        <a class="nav-link" href="/user/register/">Create Account</a>
+                    </li>
+                    <li class="nav-item d-none" id="email-nav">
+                        <span class="nav-link" id="user-email"></span>
+                    </li>
+                    <li class="nav-item d-none" id="logout-nav">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container mt-5">
+        <h1>Welcome to My WebApp</h1>
+        <p>This is a simple web app with authentication.</p>
+    </div>
 
     <script>
-        const form = document.getElementById('upload-form');
-        const fileInput = document.getElementById('images');
-        const submitButton = document.querySelector('input[type="submit"]');
-        const message = document.getElementById('message');
+        const userEmail = localStorage.getItem("userEmail");
 
-        form.addEventListener('submit', (event) => {
-            if (fileInput.files.length === 0) {
-                event.preventDefault();
-                message.style.display = 'block';
-            }
-        });
-
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length > 0) {
-                submitButton.disabled = false;
-                message.style.display = 'none';
-            } else {
-                submitButton.disabled = true;
-                message.style.display = 'block';
-            }
-        });
+        if (userEmail) {
+            document.getElementById("login-nav").classList.add("d-none");
+            document.getElementById("register-nav").classList.add("d-none");
+            document.getElementById("email-nav").classList.remove("d-none");
+            document.getElementById("logout-nav").classList.remove("d-none");
+            document.getElementById("user-email").textContent = userEmail;
+        }
+        function logout() {
+            localStorage.removeItem("userEmail");
+            location.reload();
+        }
     </script>
 </body>
 

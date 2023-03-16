@@ -1,34 +1,42 @@
 import os
 
 from pymongo import MongoClient
+from pymongo.collection import Collection
 from dotenv import load_dotenv
 from pymongo.errors import ConnectionFailure
 
 
 load_dotenv()
 URI = os.getenv('MONGODB_URI')
+client = None
 
 
-# Connect to the MongoDB database
-def connect_to_mongo() -> MongoClient:
+def get_db() -> Collection:
+    global client
+    if client is None:
+        raise ValueError("Database connection not available")
+    db = client.get_database('ProjectImagenette2')
+    return db
+
+
+def startup_event() -> None:
+    global client
     try:
         client = MongoClient(URI)
-        print("Connected to MongoDB")
-        return client
+        print('Database connection established')
     except ConnectionFailure as e:
-        print(f"Failed to connect to MongoDB: {e}")
-        return None
+        print(f'Could not connect to MongoDB: {e}')
 
 
-# Close the MongoDB connection
-def close_mongo_connection(client: MongoClient) -> None:
+def shutdown_event():
+    global client
     client.close()
-    print("MongoDB connection closed")
+    print('Database connection closed')
 
 
-client = MongoClient(URI)
-
-
-def get_db():
-    db = client.your_database_name
-    return db
+def get_collection(collection: str) -> Collection:
+    global client
+    if client is None:
+        raise ValueError("Database connection not available")
+    db = client.get_database('ProjectImagenette2')
+    return Collection(db, collection)
