@@ -1,51 +1,48 @@
-import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Union
 
 import jwt
-import dotenv
-from bson.objectid import ObjectId
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status, Request, Depends
+from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
 from config.database import get_collection
+from config.templates import templates
+from config.env import load_config
+from models import token_model
+from dependencies import verify_token
 
 
-dotenv.load_dotenv()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-JWT_SECRET = os.getenv("JWT_SECRET")
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-JWT_EXPIRATION = timedelta(minutes=int(os.getenv("JWT_EXPIRATION")))
 
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def create_access_token(data: dict[str, str]) -> str:
+def create_access_token(data: dict[str, str]) -> token_model.Token:
+    config = load_config()
     to_encode = data.copy()
-    to_encode.update({"exp": datetime.utcnow() + JWT_EXPIRATION})
-    encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    return encoded_jwt
+    to_encode.update({"exp": datetime.utcnow() + config["JWT_EXPIRATION"]})
+    encoded_jwt = jwt.encode(to_encode, config["JWT_SECRET"], algorithm=config["JWT_ALGORITHM"])
+    token = token_model.Token(access_token=encoded_jwt, token_type="bearer")
+    return token
 
 
-def verify_token(token: str) -> Union[dict[str, Any], None]:
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        return payload
-    except jwt.PyJWTError:
-        return None
+async def verify_token_endpoint(token: token_model) -> bool:
+    payload = verify_token(token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return True
 
-
-def get_user_by_username(username: str) -> Union[Any, None]:
+async def get_user_by_username(username: str) -> Union[Any, None]:
     user = get_collection('users').find_one({"username": username})
     return user
 
 
-def get_user_by_id(user_id: str) -> Union[Any, None]:
-    user = get_collection('users').find_one({"_id": ObjectId(user_id)})
+async def get_user_by_mail(email: str) -> Union[Any, None]:
+    user = get_collection('users').find_one({"email": email})
     return user
 
 
@@ -53,18 +50,18 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-async def login(username: str, password: str) -> dict[str, str]:
-    user = get_user_by_username(username)
+async def login_user(email: str, password: str) -> token_model.Token:
+    user = await get_user_by_mail(email)
     if user is None or not verify_password(password, user["hashed_password"]):
         return None
     access_token = create_access_token({"sub": str(user["_id"])})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return access_token
 
 
-async def login_route(form_data: OAuth2PasswordRequestForm = Depends()) -> dict[str, str]:
-    username = form_data.username
+async def login_route(form_data: OAuth2PasswordRequestForm = Depends()) -> token_model.Token:
+    email = form_data.username
     password = form_data.password
-    token = await login(username, password)
+    token = await login_user(email, password)
     if token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -72,3 +69,7 @@ async def login_route(form_data: OAuth2PasswordRequestForm = Depends()) -> dict[
             headers={"WWW-Authenticate": "Bearer"},
         )
     return token
+
+
+def login_page_display(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("signin.html", {"request": request})

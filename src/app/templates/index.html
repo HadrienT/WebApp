@@ -1,68 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My WebApp</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"
-        crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-        crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/navbar-fixed/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="/static/img/favicons/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/static/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/static/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="manifest" href="/static/img/favicons/manifest.json">
+    <link rel="mask-icon" href="/static/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+    <link rel="icon" href="/static/img/favicons/favicon.ico">
+    <meta name="theme-color" content="#7952b3">
+
+
+    <link href="/static/css/index.css" rel="stylesheet">
 </head>
 
-<link rel="stylesheet" href="/static/css/index.css">
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">WebApp</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item" id="login-nav">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item" id="register-nav">
-                        <a class="nav-link" href="/user/register/">Create Account</a>
-                    </li>
-                    <li class="nav-item d-none" id="email-nav">
-                        <span class="nav-link" id="user-email"></span>
-                    </li>
-                    <li class="nav-item d-none" id="logout-nav">
-                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
-                    </li>
-                </ul>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Image Insight</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                    <a class="btn btn-outline-success" href="/auth/login" type="button">Login</a>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <div class="container mt-5">
-        <h1>Welcome to My WebApp</h1>
-        <p>This is a simple web app with authentication.</p>
-    </div>
+    <main class="container">
+        <div class="intro-section bg-light p-5 rounded">
+            <div class="row">
+
+                <div class="col-sm-6">
+
+                    <p class="lead">
+                        <span class="image-insight-text">Image Insight</span><br>
+                        Welcome to Image Insight! Our state-of-the-art machine learning algorithm can analyze and
+                        describe any image you upload. Whether it's a stunning landscape or a memorable moment with
+                        friends,
+                        our
+                        AI will provide you with an accurate and detailed description in seconds.
+                    </p>
+                    <p>Explore the power of artificial intelligence and unlock a new way to understand and share your
+                        visual
+                        experiences. With Image Insight, you'll never look at your photos the same way again.</p>
+                    <a id="get-started-button" href="/user/register"
+                        class="btn btn-lg btn-primary mt-4 get-started-button" role="button">Get
+                        started now
+                        &raquo;</a>
+                </div>
+                <div class="col-sm-6 center">
+                    <img src="/static/img/tea.jpg" class="img-fluid" alt="Responsive image">
+                </div>
+            </div>
+    </main>
+
+
+
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const userEmail = localStorage.getItem("userEmail");
+        async function checkTokenAndRedirect() {
+            const token = localStorage.getItem('token');
 
-        if (userEmail) {
-            document.getElementById("login-nav").classList.add("d-none");
-            document.getElementById("register-nav").classList.add("d-none");
-            document.getElementById("email-nav").classList.remove("d-none");
-            document.getElementById("logout-nav").classList.remove("d-none");
-            document.getElementById("user-email").textContent = userEmail;
+            if (token) {
+                try {
+                    const response = await fetch('/auth/token', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                        },
+                    });
+
+                    if (response.ok) {
+                        // Token is valid, redirect to the specific page
+                        window.location.href = '/home';
+                    } else {
+                        console.log('Token is not valid')
+                        // Token is not valid, clear the token from local storage
+                        localStorage.removeItem('token');
+                    }
+                } catch (error) {
+                    console.error('Error checking token:', error);
+                }
+            }
         }
-        function logout() {
-            localStorage.removeItem("userEmail");
-            location.reload();
-        }
+
+        checkTokenAndRedirect();
     </script>
+
 </body>
 
 </html>

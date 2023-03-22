@@ -1,27 +1,35 @@
-import os
-from datetime import timedelta
+from typing import Optional, Union, Any
 
+from bson import ObjectId
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import jwt
-import dotenv
 
-from controllers.auth_controller import get_user_by_id
-from models.user_model import User
+from config.database import get_collection
+from config.env import load_config
+from models import user_model, token_model
 
-dotenv.load_dotenv()
-
-JWT_SECRET = os.getenv("JWT_SECRET")
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-JWT_EXPIRATION = timedelta(minutes=int(os.getenv("JWT_EXPIRATION")))
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token", auto_error=False)
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+async def get_user_by_id(user_id: str) -> Union[Any, None]:
+    user = get_collection('users').find_one({"_id": ObjectId(user_id)})
+    return user
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+def verify_token(token: token_model.Token) -> Union[dict[str, Any], None]:
+    config = load_config()
     try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(token, config["JWT_SECRET"], algorithms=[config["JWT_ALGORITHM"]])
+        return payload
+    except jwt.PyJWTError:
+        return None
+
+
+async def get_current_user(token: token_model.Token = Depends(oauth2_scheme)) -> user_model.User:
+    config = load_config()
+    try:
+        payload = jwt.decode(token, config["JWT_SECRET"], algorithms=[config["JWT_ALGORITHM"]])
         user_id = payload.get("sub")
         if user_id is None:
             raise HTTPException(
@@ -39,3 +47,32 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
             detail="Invalid access token",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+
+async def check_token(token: str = Depends(oauth2_scheme)):
+    config = load_config()
+    if not token:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    try:
+        payload = jwt.decode(token, config["JWT_SECRET"], algorithms=[config["JWT_ALGORITHM"]])
+        user_id = payload.get("sub")
+
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid access token")
+
+        user = await get_user_by_id(user_id)
+
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return {"detail": "Valid token"}
+
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid access token")
+
+
+async def is_logged(token: Optional[str] = Depends(oauth2_scheme)) -> bool:
+    if token is None:
+        return False
+    return True
