@@ -25,3 +25,28 @@ body {
     padding-left: 10px;
     font-weight: bold;
 }
+
+
+.dropdown-menu-custom {
+    transform: translateX(-40%);
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: -100%;
+}

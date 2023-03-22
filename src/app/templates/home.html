@@ -4,61 +4,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-  <meta name="generator" content="Hugo 0.84.0">
-  <title>Album example · Bootstrap v5.0</title>
-
+  <title>Image Insight</title>
   <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/album/">
 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
 
   <!-- Bootstrap core CSS -->
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/css/home.css" rel="stylesheet">
 
   <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
 
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
   </style>
 
 
 </head>
 
 <body>
-
   <header>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Image Insight</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item d-flex align-items-center">
+              <span id="user-name" style="color: white; padding-right: 10px;"></span>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Menu
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">My Account</a></li>
+                <li><a class="dropdown-item" href="#" onclick="logout()">Log Out</a></li>
+              </ul>
             </li>
           </ul>
-          <span id="user-name" style="color: white; padding-left: 10px;"></span>
-          <!-- <button class="btn btn-outline-success" type="button">Login</button> -->
         </div>
       </div>
     </nav>
@@ -69,12 +56,13 @@
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
-          <h1 class="fw-light">Album example</h1>
-          <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator,
-            etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+          <h1 class="fw-light">Album</h1>
+          <p class="lead text-muted">Welcome to your personal album! Here, you'll find all the images you've uploaded,
+            along with their captions. Browse, reminisce, and enjoy your visual journey captured in one convenient
+            location.</p>
           <p>
-            <a href="#" class="btn btn-primary my-2">Main call to action</a>
-            <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+            <a href="#" class="btn btn-primary my-2">Make inference</a>
+            <a href="#" class="btn btn-secondary my-2">Refresh</a>
           </p>
         </div>
       </div>
@@ -300,8 +288,47 @@
     </div>
   </footer>
 
-
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="/static/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    }
+
+    async function fetchAndDisplayUserName() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+
+      try {
+        const response = await fetch('/home/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          const userNameElement = document.getElementById('user-name');
+          userNameElement.innerText = userData.username;
+        } else {
+          window.location.href = '/auth/login';
+          console.error('Failed to fetch user information');
+        }
+      } catch (error) {
+        console.error('Error fetching user information:', error);
+      }
+    }
+
+    fetchAndDisplayUserName();
+
+  </script>
+
 
 
 </body>
