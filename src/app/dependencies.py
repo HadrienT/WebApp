@@ -1,5 +1,3 @@
-from typing import Optional, Union, Any
-
 from bson import ObjectId
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -12,18 +10,9 @@ from models import user_model, token_model
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token", auto_error=False)
 
 
-async def get_user_by_id(user_id: str) -> Union[Any, None]:
+async def get_user_by_id(user_id: str) -> user_model.User:
     user = get_collection('users').find_one({"_id": ObjectId(user_id)})
     return user
-
-
-def verify_token(token: token_model.Token) -> Union[dict[str, Any], None]:
-    config = load_config()
-    try:
-        payload = jwt.decode(token, config["JWT_SECRET"], algorithms=[config["JWT_ALGORITHM"]])
-        return payload
-    except jwt.PyJWTError:
-        return None
 
 
 async def get_current_user(token: token_model.Token = Depends(oauth2_scheme)) -> user_model.User:
@@ -42,6 +31,7 @@ async def get_current_user(token: token_model.Token = Depends(oauth2_scheme)) ->
             raise HTTPException(status_code=404, detail="User not found")
         return user
     except jwt.PyJWTError:
+        print("JWT Error")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid access token",
@@ -70,9 +60,3 @@ async def check_token(token: str = Depends(oauth2_scheme)):
 
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid access token")
-
-
-async def is_logged(token: Optional[str] = Depends(oauth2_scheme)) -> bool:
-    if token is None:
-        return False
-    return True

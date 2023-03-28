@@ -1,24 +1,50 @@
-from typing import Optional
-
-from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import APIRouter, File, Request, Depends, UploadFile
+from fastapi.responses import HTMLResponse
 
 from config.templates import templates
-from models.user_model import User
 from dependencies import get_current_user
-from models import user_model
+from models import user_model, image_model, infer_model
+from controllers.home_controller import get_images, upload_image, show_account, process_image_data, delete_image
 
 home_router = APIRouter()
 
 
 @home_router.get("/", response_class=HTMLResponse)
-async def home(request: Request, current_user: Optional[user_model.User] = True):
-    if current_user:
-        return templates.TemplateResponse("home.html", {"request": request})
-    else:
-        return RedirectResponse(url="/auth/login")
+async def home(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
 
 
-@home_router.get("/me", response_model=User)
-async def get_user_info(current_user: User = Depends(get_current_user)):
+@home_router.get("/me", response_model=user_model.User)
+async def get_user_info(current_user: user_model.User = Depends(get_current_user)):
     return current_user
+
+
+@home_router.get("/images", response_model=list[image_model.ImageResponse])
+async def get_images_route(current_user: user_model.User = Depends(get_current_user)):
+    return await get_images(current_user)
+
+
+@home_router.post("/images/upload")
+async def upload_image_route(file: UploadFile = File(...), current_user: user_model.User = Depends(get_current_user)):
+    return await upload_image(file=file, current_user=current_user)
+
+
+@home_router.get('/inference', response_class=HTMLResponse)
+async def inference(request: Request):
+    return templates.TemplateResponse("inference.html", {"request": request})
+
+
+@home_router.get("/myaccount", response_class=HTMLResponse)
+async def my_account(request: Request, current_user: user_model.User = Depends(get_current_user)):
+    return await show_account(request, current_user)
+
+
+@home_router.post("/inference")
+async def api_apply_algorithm(request_data: infer_model.InferRequest):
+    await process_image_data(request_data.image_data, request_data.image_id)
+    return {"message": "Algorithm is being applied."}
+
+
+@home_router.delete("/images/delete/{image_id}")
+async def delete_image_route(image_id: str, current_user: user_model.User = Depends(get_current_user)):
+    return await delete_image(image_id, current_user)

@@ -41,11 +41,27 @@
                 const data = await response.json(); // Parse the JSON response
                 const token = data.token;
                 if (token) {
-                    localStorage.setItem('token', token);
-                }
-                const redirectUrl = data.redirectUrl;
-                if (redirectUrl) {
-                    window.location.href = redirectUrl;
+                    try {
+                        const response = await fetch('/home', {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': 'Bearer ' + token,
+                            },
+                        });
+
+                        if (response.ok) {
+                            // Token is valid, load the content and replace the current page
+                            const homeData = await response.text();
+                            document.open();
+                            document.write(homeData);
+                            document.close();
+                        } else {
+                            console.log('Token is not valid');
+                            localStorage.removeItem('token');
+                        }
+                    } catch (error) {
+                        console.error('Error checking token:', error);
+                    }
                 }
             } else {
                 alert('Error creating account. Please try again.');

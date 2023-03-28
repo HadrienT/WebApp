@@ -1,0 +1,16 @@
+.uploaded-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.uploaded-image img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+}

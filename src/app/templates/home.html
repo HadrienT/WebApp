@@ -14,9 +14,6 @@
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
   <link href="/static/css/home.css" rel="stylesheet">
 
-  <style>
-
-  </style>
 
 
 </head>
@@ -25,12 +22,20 @@
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Image Insight</a>
+        <a class="navbar-brand" href="/home">Image Insight</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/home/inference">Inference</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/home">Album</a>
+            </li>
+          </ul>
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <li class="nav-item d-flex align-items-center">
               <span id="user-name" style="color: white; padding-right: 10px;"></span>
@@ -41,7 +46,7 @@
                 Menu
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">My Account</a></li>
+                <li><a class="dropdown-item" href="#" id="myaccount">My Account</a></li>
                 <li><a class="dropdown-item" href="#" onclick="logout()">Log Out</a></li>
               </ul>
             </li>
@@ -50,6 +55,7 @@
       </div>
     </nav>
   </header>
+
 
   <main>
 
@@ -61,8 +67,8 @@
             along with their captions. Browse, reminisce, and enjoy your visual journey captured in one convenient
             location.</p>
           <p>
-            <a href="#" class="btn btn-primary my-2">Make inference</a>
-            <a href="#" class="btn btn-secondary my-2">Refresh</a>
+            <a href="/home/inference" class="btn btn-primary my-2">Make inference</a>
+            <a id="refresh" href="#" class="btn btn-secondary my-2">Refresh</a>
           </p>
         </div>
       </div>
@@ -71,207 +77,8 @@
     <div class="album py-5 bg-light">
       <div class="container">
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"></div>
 
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
-                role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                <title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                  dy=".3em">Thumbnail</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                  content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
       </div>
     </div>
 
@@ -290,44 +97,118 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="/static/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/logout.js"></script>
+
 
   <script>
-    function logout() {
-      localStorage.removeItem('token');
-      window.location.href = '/';
-    }
-
-    async function fetchAndDisplayUserName() {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        console.error('No token found');
-        return;
-      }
+    async function deleteImage(imageId) {
+      const token = localStorage.getItem("token");
 
       try {
-        const response = await fetch('/home/me', {
+        const response = await fetch(`/home/images/delete/${imageId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("An error occurred while deleting the image.");
+        }
+
+        (`Image with ID: ${imageId} deleted successfully.`);
+        await displayImages(); // Refresh the image grid after successful deletion
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  </script>
+
+  <script>
+
+    async function getImages() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('/home/images', {
+          method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
 
         if (response.ok) {
-          const userData = await response.json();
-          const userNameElement = document.getElementById('user-name');
-          userNameElement.innerText = userData.username;
+          const images = await response.json();
+          return images.map(image => ({
+            src: `data:image/jpeg;base64,${image.image_data}`,
+            caption: image.description,
+            timestamp: new Date(image.creation_date).toLocaleString(),
+            image_data: image.image_data,
+            image_id: image._id,
+          }));
         } else {
-          window.location.href = '/auth/login';
-          console.error('Failed to fetch user information');
+          console.error('Failed to fetch images');
+          return [];
         }
       } catch (error) {
-        console.error('Error fetching user information:', error);
+        console.error('Error fetching images:', error);
+        return [];
       }
     }
 
-    fetchAndDisplayUserName();
+    function createImageCard(image) {
+      return `
+    <div class="col">
+      <div class="card shadow-sm">
+        <img src="${image.src}" class="card-img-top card-img-fixed" alt="${image.caption}">
+        <div class="card-body">
+          <p class="card-text">${image.caption}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+              <button type="button" class="btn btn-sm btn-outline-secondary">Infer</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary delete-btn" data-image-id="${image.image_id}">Delete</button>
+            </div>
+            <small class="text-muted">${image.timestamp}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+    }
 
+
+    function attachDeleteEventListeners(deleteButtons) {
+      deleteButtons.forEach((deleteButton) => {
+        deleteButton.addEventListener("click", () => {
+          const imageId = deleteButton.getAttribute("data-image-id");
+          deleteImage(imageId);
+        });
+      });
+    }
+
+    async function displayImages() {
+      const images = await getImages();
+      const imageGrid = document.querySelector(".album .container .row");
+      imageGrid.innerHTML = images.map(createImageCard).join("");
+      const deleteButtons = document.querySelectorAll(".delete-btn");
+      attachDeleteEventListeners(deleteButtons);
+    }
+
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await displayImages();
+    });
   </script>
+
+  <script src="/static/js/setname.js"></script>
+
+  <script>
+    document.getElementById('refresh').addEventListener('click', async () => {
+      await displayImages();
+    });
+  </script>
+  <script src="/static/js/myaccount.js"></script>
+
+
 
 
 

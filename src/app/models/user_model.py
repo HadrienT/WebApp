@@ -9,6 +9,8 @@ class User(BaseModel):
     hashed_password: str
     password: Optional[str] = None
     balance: Optional[float] = 0.0
+    is_active: Optional[bool] = True
+    creation_date: Optional[str] = None
 
     class Config:
         arbitrary_types_allowed = True

@@ -11,14 +11,6 @@ URI = os.getenv('MONGODB_URI')
 client = None
 
 
-def get_db() -> Collection:
-    global client
-    if client is None:
-        raise ValueError("Database connection not available")
-    db = client.get_database('ProjectImagenette2')
-    return db
-
-
 def startup_event() -> None:
     global client
     try:
@@ -38,5 +30,5 @@ def get_collection(collection: str) -> Collection:
     global client
     if client is None:
         raise ValueError("Database connection not available")
-    db = client.get_database('ProjectImagenette2')
+    db = client.get_database('ImageInsight')
     return Collection(db, collection)

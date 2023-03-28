@@ -1,3 +1,4 @@
+from datetime import datetime
 from bson import ObjectId
 from fastapi import Request, HTTPException
 from passlib.context import CryptContext
@@ -27,7 +28,7 @@ async def create_user(user: UserCreate) -> User:
         return None
 
     hashed_password = get_password_hash(user.password)
-    new_user = User(email=user.email, username=user.username, hashed_password=hashed_password)
+    new_user = User(email=user.email, username=user.username, hashed_password=hashed_password, is_active=True, creation_date=datetime.utcnow())
     user_dict = new_user.dict()
     user_dict["_id"] = ObjectId(user_dict["id"]) if user_dict.get("id") else ObjectId()
     del user_dict["id"]
@@ -52,6 +53,6 @@ async def register_user(user: User) -> JSONResponse:
         token = create_access_token(token_data)
 
         # Return a JSON response with the token and redirect URL
-        return JSONResponse(content={"token": token, "redirectUrl": "/home"})
+        return JSONResponse(content={"token": token.access_token, "redirectUrl": "/home"})
     else:
-        raise HTTPException(status_code=400, detail="Error creating account.")
+        raise HTTPException(status_code=400, detail="Email address is already in use.")

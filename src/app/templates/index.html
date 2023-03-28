@@ -85,31 +85,46 @@
     <script>
         async function checkTokenAndRedirect() {
             const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/auth/token', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                    },
+                })
 
-            if (token) {
-                try {
-                    const response = await fetch('/auth/token', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + token,
-                        },
-                    });
 
-                    if (response.ok) {
-                        // Token is valid, redirect to the specific page
-                        window.location.href = '/home';
-                    } else {
-                        console.log('Token is not valid')
-                        // Token is not valid, clear the token from local storage
-                        localStorage.removeItem('token');
+                if (res.ok) {
+                    try {
+                        const response = await fetch('/home', {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': 'Bearer ' + token,
+                            },
+                        });
+
+                        if (response.ok) {
+                            // Token is valid, load the content and replace the current page
+                            const homeData = await response.text();
+                            document.open();
+                            document.write(homeData);
+                            document.close();
+                        } else {
+                            console.log('Token is not valid');
+                            localStorage.removeItem('token');
+                        }
+                    } catch (error) {
+                        console.error('Error checking token:', error);
                     }
-                } catch (error) {
-                    console.error('Error checking token:', error);
                 }
+            } catch (error) {
+                console.error('Error checking token:', error);
             }
         }
-
-        checkTokenAndRedirect();
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Window loaded');
+            checkTokenAndRedirect();
+        });
     </script>
 
 </body>

@@ -10,8 +10,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from config.database import get_collection
 from config.templates import templates
 from config.env import load_config
-from models import token_model
-from dependencies import verify_token
+from models import token_model, user_model
+from dependencies import get_current_user
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -30,18 +30,12 @@ def create_access_token(data: dict[str, str]) -> token_model.Token:
     return token
 
 
-async def verify_token_endpoint(token: token_model) -> bool:
-    payload = verify_token(token)
-    if payload is None:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    return True
-
 async def get_user_by_username(username: str) -> Union[Any, None]:
-    user = get_collection('users').find_one({"username": username})
+    user = await get_collection('users').find_one({"username": username})
     return user
 
 
-async def get_user_by_mail(email: str) -> Union[Any, None]:
+def get_user_by_mail(email: str) -> Union[Any, None]:
     user = get_collection('users').find_one({"email": email})
     return user
 
@@ -51,9 +45,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 async def login_user(email: str, password: str) -> token_model.Token:
-    user = await get_user_by_mail(email)
+    user = get_user_by_mail(email)
     if user is None or not verify_password(password, user["hashed_password"]):
+        print("User not found")
         return None
+    print("User found")
     access_token = create_access_token({"sub": str(user["_id"])})
     return access_token
 
@@ -71,5 +67,5 @@ async def login_route(form_data: OAuth2PasswordRequestForm = Depends()) -> token
     return token
 
 
-def login_page_display(request: Request) -> HTMLResponse:
+def login_page_display(request: Request, current_user: user_model.User = Depends(get_current_user)) -> HTMLResponse:
     return templates.TemplateResponse("signin.html", {"request": request})

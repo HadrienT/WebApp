@@ -15,11 +15,10 @@ def login_page(request: Request) -> HTMLResponse:
 
 
 @auth_router.post("/token", response_model=token_model.Token)
-@auth_router.post("/login", response_model=token_model.Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> token_model.Token:
     return await login_route(form_data)
 
 
 @auth_router.get("/token")
-async def check_token_route(token: str = Depends(oauth2_scheme)) -> dict[str, str]:
+async def check_token_route(token: token_model.Token = Depends(oauth2_scheme)) -> dict[str, str]:
     return await check_token(token)
