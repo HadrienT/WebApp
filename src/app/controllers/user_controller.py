@@ -28,7 +28,7 @@ async def create_user(user: UserCreate) -> User:
         return None
 
     hashed_password = get_password_hash(user.password)
-    new_user = User(email=user.email, username=user.username, hashed_password=hashed_password, is_active=True, creation_date=datetime.utcnow())
+    new_user = User(email=user.email, username=user.username, hashed_password=hashed_password, is_active=True, creation_date=datetime.utcnow().isoformat())
     user_dict = new_user.dict()
     user_dict["_id"] = ObjectId(user_dict["id"]) if user_dict.get("id") else ObjectId()
     del user_dict["id"]
