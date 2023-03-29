@@ -10,7 +10,7 @@ def main(queue: multiprocessing.Queue = multiprocessing.Queue(), image_bytes: by
     labels = ['tench', 'English springer', 'cassette player', 'chain saw', 'church', 'French horn', 'garbage truck', 'gas pump', 'golf ball', 'parachute']
     print('Infering...')
     model = LeNet_5.Model(num_class=10)
-    checkpoint_path = '.\\src\\MachineLearning\\Checkpoints\\a.pt'
+    checkpoint_path = './src/MachineLearning/Checkpoints/a.pt'
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     checkpoint = torch.load(checkpoint_path)
