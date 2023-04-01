@@ -136,15 +136,24 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error("An error occurred while uploading the image.");
+                    const responseData = await response.json();
+                    if (responseData.error === "Storage limit exceeded") {
+                        throw new Error("Storage limit exceeded");
+                    } else {
+                        throw new Error("An error occurred while uploading the image.");
+                    }
                 }
-
                 const responseData = await response.json();
 
                 // Call the displayUploadedImage function after a successful upload
                 displayUploadedImage(file, responseData.image_id);
             } catch (error) {
                 console.error("Error:", error);
+                if (error.message.includes("Storage limit exceeded")) {
+                    alert("Upload failed: Storage limit exceeded.");
+                } else {
+                    alert("An error occurred while uploading the image.");
+                }
             }
         });
     </script>

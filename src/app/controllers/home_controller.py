@@ -36,8 +36,8 @@ async def get_images(current_user: user_model.User) -> list[image_model.ImageRes
 
 
 async def upload_image(file: UploadFile = File(...), current_user: user_model.User = None) -> JSONResponse:
-    storage_used = user_controller.get_user_memory_usage(current_user)
-    if storage_used + file.size > current_user["storage_limit"]:
+    memory = await user_controller.get_user_memory_usage(current_user)
+    if memory["memory_usage"] + file.size > memory["max_memory_allowed"]:
         return JSONResponse(content={"error": "Storage limit exceeded"}, status_code=400)
 
     # Read the uploaded file
