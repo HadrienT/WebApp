@@ -11,6 +11,7 @@ class User(BaseModel):
     balance: Optional[float] = 0.0
     is_active: Optional[bool] = True
     creation_date: Optional[str] = None
+    storage_limit: Optional[int] = 10 * 1024 * 1024
 
     class Config:
         arbitrary_types_allowed = True

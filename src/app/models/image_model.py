@@ -1,24 +1,23 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 from typing import Optional
 from bson import ObjectId
 from datetime import datetime
 
 
 class Image(BaseModel):
-    id: Optional[ObjectId]
+    _id: Optional[ObjectId] = Field(alias="_id")
     user_id: str
     image_data: bytes
     description: Optional[str] = None
     creation_date: datetime
+    file_size: int
 
     class Config:
         arbitrary_types_allowed = True
-
-    @validator("id", pre=True, always=True)
-    def validate_id(cls, value):
-        if value is None:
-            return value
-        return str(value)
+        json_encoders = {
+            ObjectId: str,
+            datetime: lambda dt: dt.isoformat(),
+        }
 
 
 class ImageResponse(BaseModel):

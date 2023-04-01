@@ -49,8 +49,9 @@
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item d-flex align-items-center">
-                            <span id="user-name" style="color: white; padding-right: 10px;"></span>
+                            <span id="user-infos" style="color: white; padding-right: 10px;"></span>
                         </li>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -85,7 +86,7 @@
                 </div>
             </div>
         </div>
-        <div class="mt-4" id="uploaded-image-container"></div>
+        <div class="mt-4 d-flex" id="uploaded-image-container"></div>
     </main>
 
 
@@ -93,7 +94,7 @@
 
     <script src="/static/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/logout.js"></script>
-    <script src="/static/js/setname.js"></script>
+    <script src="/static/js/setUserInfos.js"></script>
     <script src="/static/js/myaccount.js"></script>
 
     <script>
@@ -157,6 +158,14 @@
                 const imageId = imageElement.getAttribute('data-image-id');
 
                 try {
+                    // Deduct the balance before running the inference
+                    const cost = 10; // Set the cost of running the algorithm
+                    const deducResponse = await deductBalance(cost);
+
+                    if (!deducResponse.ok) {
+                        throw new Error('An error occurred while deducting the balance.');
+                    }
+                    // Run the inference after deducting the balance
                     const response = await fetch('/home/inference', {
                         method: 'POST',
                         headers: {
@@ -171,11 +180,78 @@
                     }
 
                     const result = await response.json();
+                    let resultElement = document.querySelector('.result-container');
+
+                    if (resultElement) {
+                        // Update the existing result container
+                        resultElement.querySelector('.result-text').textContent = result.description;
+                    } else {
+                        // Create a new result container
+                        resultElement = document.createElement('div');
+                        resultElement.classList.add('result-container', 'ms-3', 'mt-2');
+                        resultElement.innerHTML = `<p class="result-text">${result.description}</p>`;
+                        document.querySelector('.uploaded-image').appendChild(resultElement);
+
+                        const algorithmButton = document.getElementById('apply-algorithm');
+                        algorithmButton.insertAdjacentElement('afterend', resultElement);
+                    }
+
                 } catch (error) {
                     console.error('Error:', error);
                 }
             }
         });
+
+    </script>
+
+
+    <script>async function getUserBalance() {
+            try {
+                const response = await fetch('/user/get_balance', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('An error occurred while fetching user balance.');
+                }
+
+                const balanceData = await response.json();
+                document.getElementById('user-balance').textContent = `Balance: ${balanceData.balance.toFixed(2)} Coin`;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        getUserBalance();
+    </script>
+
+    <script>
+        async function deductBalance(amount) {
+            try {
+                const response = await fetch('/user/deduct_balance?amount=' + amount, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('An error occurred while deducting balance.');
+                }
+
+                // Update user balance in UI
+                getUserBalance();
+                return response;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error deducting balance: ' + error.message);
+                throw error;
+            }
+        }
     </script>
 
 </body>

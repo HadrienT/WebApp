@@ -7,6 +7,7 @@ from bson import ObjectId
 from fastapi import File, Request, UploadFile
 from fastapi.responses import JSONResponse
 
+from controllers import user_controller
 from config.templates import templates
 from config.database import get_collection
 from models import image_model, user_model
@@ -35,11 +36,23 @@ async def get_images(current_user: user_model.User) -> list[image_model.ImageRes
 
 
 async def upload_image(file: UploadFile = File(...), current_user: user_model.User = None) -> JSONResponse:
+    storage_used = user_controller.get_user_memory_usage(current_user)
+    if storage_used + file.size > current_user["storage_limit"]:
+        return JSONResponse(content={"error": "Storage limit exceeded"}, status_code=400)
+
     # Read the uploaded file
     contents = await file.read()
 
+    # Calculate the file size in bytes
+    file_size = len(contents)
+
     # Create a new Image object using the provided data
-    new_image = image_model.Image(user_id=str(current_user['_id']), image_data=contents, creation_date=datetime.utcnow())
+    new_image = image_model.Image(
+        user_id=str(current_user["_id"]),
+        image_data=contents,
+        creation_date=datetime.utcnow(),
+        file_size=file_size,
+    )
 
     # Insert the new image into the MongoDB collection
     result = get_collection("images").insert_one(new_image.dict())
@@ -49,11 +62,10 @@ async def upload_image(file: UploadFile = File(...), current_user: user_model.Us
 
 
 async def show_account(request: Request, current_user: user_model.User) -> templates.TemplateResponse:
-    user = user_model.User(**current_user)
     user_info = {
-        "username": user.username,
-        "email": user.email,
-        "balance": user.balance,
+        "username": current_user["username"],
+        "email": current_user["email"],
+        "balance": current_user["balance"],
     }
     return templates.TemplateResponse("myaccount.html", {"request": request, "user_info": user_info})
 
@@ -90,7 +102,7 @@ async def process_image_data(image_data: str, image_id: str) -> Any:
     # Update the image description in the database
     set_image_description(image_id, description[0])
 
-    return description
+    return {"description": description[0]}
 
 
 async def delete_image(image_id: str, current_user: user_model.User) -> JSONResponse:

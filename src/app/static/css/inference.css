@@ -14,3 +14,22 @@
     max-height: 300px;
     object-fit: contain;
 }
+
+
+.result-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 10px;
+    min-width: 200px;
+}
+
+.result-text {
+    margin: 0;
+    font-weight: bold;
+    color: #212529;
+    text-align: center;
+}

@@ -1,5 +1,7 @@
+from typing import Optional
+
 from bson import ObjectId
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Cookie
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 
@@ -15,10 +17,19 @@ async def get_user_by_id(user_id: str) -> user_model.User:
     return user
 
 
-async def get_current_user(token: token_model.Token = Depends(oauth2_scheme)) -> user_model.User:
+async def get_current_user(token: Optional[token_model.Token] = Depends(oauth2_scheme),
+                           cookie_token: Optional[str] = Cookie(None)) -> user_model.User:
     config = load_config()
+    used_token = token if token else cookie_token
+    if not used_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid access token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     try:
-        payload = jwt.decode(token, config["JWT_SECRET"], algorithms=[config["JWT_ALGORITHM"]])
+        payload = jwt.decode(used_token, config["JWT_SECRET"], algorithms=[config["JWT_ALGORITHM"]])
         user_id = payload.get("sub")
         if user_id is None:
             raise HTTPException(
@@ -39,7 +50,7 @@ async def get_current_user(token: token_model.Token = Depends(oauth2_scheme)) ->
         )
 
 
-async def check_token(token: str = Depends(oauth2_scheme)):
+async def check_token(token: str):
     config = load_config()
     if not token:
         raise HTTPException(status_code=401, detail="Unauthorized")

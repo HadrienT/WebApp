@@ -24,17 +24,7 @@
 
 
     <link href="/static/css/home.css" rel="stylesheet">
-
-
-    <style>
-        .account-container {
-            width: 80vw;
-            max-width: 1000px;
-            padding: 2rem;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-        }
-    </style>
+    <link href="/static/css/myaccount.css" rel="stylesheet">
 
 </head>
 
@@ -60,7 +50,7 @@
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item d-flex align-items-center">
-                            <span id="user-name" style="color: white; padding-right: 10px;"></span>
+                            <span id="user-infos" style="color: white; padding-right: 10px;"></span>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -89,9 +79,22 @@
                 <div class="col-md-4 fw-bold">Email:</div>
                 <div class="col-md-8">{{ user_info.email }}</div>
             </div>
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md-4 fw-bold">Balance:</div>
-                <div class="col-md-8">{{ user_info.balance }} Coin</div>
+                <div class="col-md-8">
+                    <span>{{ user_info.balance }} Coin</span>
+                    <button id="reset-balance" class="btn btn-primary btn-sm">Reset Balance</button>
+                </div>
+            </div>
+            <div class="memory-usage-container">
+                <div class="col-md-4 fw-bold">Memory Usage:</div>
+                <div class="progress-container">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="progress-text"></div>
+                </div>
             </div>
         </div>
     </main>
@@ -101,7 +104,71 @@
     <script src="/static/js/bootstrap.bundle.min.js"></script>
 
     <script src="/static/js/logout.js"></script>
-    <script src="/static/js/setname.js"></script>
+    <script src="/static/js/setUserInfos.js"></script>
+
+    <script>
+        document.getElementById("reset-balance").addEventListener("click", async () => {
+            try {
+                const response = await fetch("/user/reset_balance", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token"),
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const newBalance = data.balance;
+                    alert("Balance reset successfully.");
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    const errorMessage = error.detail || "Error resetting balance. Please try again.";
+                    alert(errorMessage);
+                }
+            } catch (error) {
+                console.error("Error resetting balance:", error);
+                alert("Error resetting balance. Please try again.");
+            }
+        });
+    </script>
+
+    <script>
+        async function updateMemoryUsage() {
+            try {
+                const response = await fetch("/user/memory_usage", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("An error occurred while fetching memory usage.");
+                }
+
+                const memoryData = await response.json();
+                console.log("Memory Data:", memoryData)
+                const progressBar = document.querySelector(".progress-bar");
+                const percentUsed = (memoryData.memory_usage / memoryData.max_memory_allowed) * 100;
+
+                const progressBarText = document.querySelector('.progress-text');
+                progressBarText.textContent = `Memory Usage: ${(memoryData.memory_usage / (1024 * 1024)).toFixed(2)} MB / ${(memoryData.max_memory_allowed / (1024 * 1024)).toFixed(2)} MB`;
+
+                progressBar.setAttribute("aria-valuenow", percentUsed);
+                progressBar.style.width = `${percentUsed}%`;
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        updateMemoryUsage();
+
+    </script>
+
+
 </body>
 
 </html>

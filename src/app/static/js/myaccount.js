@@ -1,4 +1,4 @@
-async function checkTokenAndRedirect() {
+async function goToMyAccountPage() {
     const token = localStorage.getItem('token');
 
     if (token) {
@@ -16,6 +16,8 @@ async function checkTokenAndRedirect() {
                 document.open();
                 document.write(homeData);
                 document.close();
+                // Add a new entry to the browser's session history
+                window.history.pushState({}, 'My Account', '/home/myaccount');
             } else {
                 console.log('Token is not valid');
                 localStorage.removeItem('token');
@@ -26,5 +28,5 @@ async function checkTokenAndRedirect() {
     }
 }
 document.getElementById('myaccount').addEventListener('click', async () => {
-    await checkTokenAndRedirect();
+    await goToMyAccountPage();
 });
