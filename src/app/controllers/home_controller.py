@@ -15,7 +15,7 @@ from MachineLearning import Infer
 
 
 def get_all_user_images(user_id: str) -> list[image_model.ImageResponse]:
-    cursor = get_collection('images').find({"user_id": user_id})
+    cursor = get_collection('images').find({"user_id": user_id}).sort("creation_date", -1)
     images = [image for image in cursor]
     for image in images:
         image["_id"] = str(image["_id"])  # Convert the _id field to a string
@@ -110,3 +110,12 @@ async def delete_image(image_id: str, current_user: user_model.User) -> JSONResp
     result = get_collection("images").delete_one({"_id": ObjectId(image_id), "user_id": str(current_user["_id"])})
     # Return the result of the deletion
     return JSONResponse(content={"deleted_count": result.deleted_count})
+
+
+async def show_upgrade(request: Request, current_user: user_model.User) -> templates.TemplateResponse:
+    user_info = {
+        "username": current_user["username"],
+        "email": current_user["email"],
+        "balance": current_user["balance"],
+    }
+    return templates.TemplateResponse("pricing.html", {"request": request, "user_info": user_info})

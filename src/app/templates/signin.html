@@ -2,42 +2,9 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-  <meta name="generator" content="Hugo 0.84.0">
-  <title>Signin Template · Bootstrap v5.0</title>
-
-  <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
-
-  <link rel="icon" href="/static/img/favicons/favicon-32x32.png" type="image/png">
-  <link rel="shortcut icon" href="/static/img/favicons/favicon-32x32.png" type="image/png">
-
-
-  <!-- Bootstrap core CSS -->
+  {% include 'head.html' %}
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
   <link href="/static/css/signin.css" rel="stylesheet">
-
-  <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
-
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
-  </style>
-
-
 </head>
 
 <body class="text-center">
@@ -75,64 +42,7 @@
     </form>
   </main>
 
-  <script>
-    document.getElementById('register').addEventListener('click', () => {
-      window.location.href = '/user/register';
-    });
-
-    document.getElementById('signin-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById('floatingInput').value;
-      const password = document.getElementById('floatingPassword').value;
-      const rememberMe = document.querySelector('input[type="checkbox"]').checked;
-
-      const formData = new FormData();
-      formData.append("username", email);
-      formData.append("password", password);
-
-      try {
-        const response = await fetch('/auth/token', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          },
-          body: formData
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          localStorage.setItem('token', data.access_token); // Save token to local storage
-          document.cookie = `cookie_token=${data.access_token}; path=/; max-age=${30 * 60 * 60}`;
-
-          // Make a GET request to the /home endpoint with the token
-          const homeResponse = await fetch('/home', {
-            method: 'GET',
-            headers: {
-              'Authorization': 'Bearer ' + data.access_token,
-            },
-          });
-
-          if (homeResponse.ok) {
-            const homeData = await homeResponse.text();
-            document.open();
-            document.write(homeData);
-            document.close();
-            window.history.pushState({}, 'Home page', '/home');
-
-          } else {
-            alert('Failed to load home page');
-          }
-        } else {
-          // Handle errors
-          alert('Sign in failed');
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  </script>
-
+  <script src="/static/js/login.js"></script>
 
 </body>
 

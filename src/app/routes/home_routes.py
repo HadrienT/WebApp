@@ -36,7 +36,6 @@ async def inference(request: Request):
 
 @home_router.get("/myaccount", response_class=HTMLResponse)
 async def my_account(request: Request, current_user: user_model.User = Depends(get_current_user)):
-    print('Inside route')
     return await home_controller.show_account(request, current_user)
 
 
@@ -48,3 +47,8 @@ async def api_apply_algorithm(request_data: infer_model.InferRequest):
 @home_router.delete("/images/delete/{image_id}")
 async def delete_image_route(image_id: str, current_user: user_model.User = Depends(get_current_user)):
     return await home_controller.delete_image(image_id, current_user)
+
+
+@home_router.get("/upgrade", response_class=HTMLResponse)
+async def upgrade(request: Request, current_user: user_model.User = Depends(get_current_user)):
+    return await home_controller.show_upgrade(request, current_user)

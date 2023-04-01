@@ -27,6 +27,7 @@ async function goToMyAccountPage() {
         }
     }
 }
-document.getElementById('myaccount').addEventListener('click', async () => {
+
+window.onload = async () => {
     await goToMyAccountPage();
-});
+};
