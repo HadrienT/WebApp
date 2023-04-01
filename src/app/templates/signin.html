@@ -118,6 +118,8 @@
             document.open();
             document.write(homeData);
             document.close();
+            window.history.pushState({}, 'Home page', '/home');
+
           } else {
             alert('Failed to load home page');
           }
