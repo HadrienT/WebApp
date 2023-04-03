@@ -24,3 +24,16 @@ body {
     font-size: 3.5rem;
   }
 }
+
+card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-body ul {
+  flex-grow: 1;
+}
+
+.card-list {
+  min-height: 50px;
+}

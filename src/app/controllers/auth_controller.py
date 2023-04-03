@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
 from config.database import get_collection
-from config.templates import templates
+from config.templates import jinja_templates
 from config.env import load_config
 from models import token_model, user_model
 from dependencies import get_current_user
@@ -68,4 +68,4 @@ async def login_route(form_data: OAuth2PasswordRequestForm = Depends()) -> token
 
 
 def login_page_display(request: Request, current_user: user_model.User = Depends(get_current_user)) -> HTMLResponse:
-    return templates.TemplateResponse("signin.html", {"request": request})
+    return jinja_templates.TemplateResponse("signin.html", {"request": request})

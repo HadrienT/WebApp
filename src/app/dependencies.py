@@ -23,9 +23,8 @@ async def get_current_user(token: Optional[token_model.Token] = Depends(oauth2_s
     used_token = token if token else cookie_token
     if not used_token:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid access token",
-            headers={"WWW-Authenticate": "Bearer"},
+            status_code=status.HTTP_303_SEE_OTHER,
+            headers={"Location": "/"},
         )
 
     try:
@@ -33,21 +32,15 @@ async def get_current_user(token: Optional[token_model.Token] = Depends(oauth2_s
         user_id = payload.get("sub")
         if user_id is None:
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid access token",
-                headers={"WWW-Authenticate": "Bearer"},
+                status_code=status.HTTP_303_SEE_OTHER,
+                headers={"Location": "/"},
             )
         user = await get_user_by_id(user_id)
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
         return user
     except jwt.PyJWTError:
-        print("JWT Error")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid access token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise HTTPException(status_code=401, detail="Invalid access token")
 
 
 async def check_token(token: str):
@@ -71,3 +64,4 @@ async def check_token(token: str):
 
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid access token")
+    

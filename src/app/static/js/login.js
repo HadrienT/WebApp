@@ -25,7 +25,7 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('token', data.access_token); // Save token to local storage
-            document.cookie = `cookie_token=${data.access_token}; path=/; max-age=${30 * 60 * 60}`;
+            document.cookie = `cookie_token=${data.access_token}; path=/; max-age=${24 * 60 * 60}`;
 
             // Make a GET request to the /home endpoint with the token
             const homeResponse = await fetch('/home', {

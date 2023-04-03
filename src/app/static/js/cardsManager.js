@@ -20,7 +20,6 @@ async function deleteImage(imageId) {
     }
 }
 
-
 async function getImages() {
     const token = localStorage.getItem('token');
     try {
@@ -30,7 +29,6 @@ async function getImages() {
                 'Authorization': `Bearer ${token}`,
             },
         });
-
         if (response.ok) {
             const images = await response.json();
             return images.map(image => ({

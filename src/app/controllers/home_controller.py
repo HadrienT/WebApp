@@ -8,14 +8,13 @@ from fastapi import File, Request, UploadFile
 from fastapi.responses import JSONResponse
 
 from controllers import user_controller
-from config.templates import templates
-from config.database import get_collection
+from config import database, templates
 from models import image_model, user_model
 from MachineLearning import Infer
 
 
 def get_all_user_images(user_id: str) -> list[image_model.ImageResponse]:
-    cursor = get_collection('images').find({"user_id": user_id}).sort("creation_date", -1)
+    cursor = database.get_collection('images').find({"user_id": user_id}).sort("creation_date", -1)
     images = [image for image in cursor]
     for image in images:
         image["_id"] = str(image["_id"])  # Convert the _id field to a string
@@ -55,23 +54,23 @@ async def upload_image(file: UploadFile = File(...), current_user: user_model.Us
     )
 
     # Insert the new image into the MongoDB collection
-    result = get_collection("images").insert_one(new_image.dict())
+    result = database.get_collection("images").insert_one(new_image.dict())
 
     # Return the inserted image ID
     return JSONResponse(content={"image_id": str(result.inserted_id)})
 
 
-async def show_account(request: Request, current_user: user_model.User) -> templates.TemplateResponse:
+async def show_account(request: Request, current_user: user_model.User) -> templates.jinja_templates.TemplateResponse:
     user_info = {
         "username": current_user["username"],
         "email": current_user["email"],
         "balance": current_user["balance"],
     }
-    return templates.TemplateResponse("myaccount.html", {"request": request, "user_info": user_info})
+    return templates.jinja_templates.TemplateResponse("myaccount.html", {"request": request, "user_info": user_info})
 
 
 def set_image_description(image_id: str, description: str) -> Optional[dict]:
-    collection = get_collection('images')  # Replace with your collection name
+    collection = database.get_collection('images')  # Replace with your collection name
 
     result = collection.update_one({"_id": ObjectId(image_id)}, {"$set": {"description": description}})
     if result.modified_count > 0:
@@ -107,15 +106,15 @@ async def process_image_data(image_data: str, image_id: str) -> Any:
 
 async def delete_image(image_id: str, current_user: user_model.User) -> JSONResponse:
     # Delete the image from the database
-    result = get_collection("images").delete_one({"_id": ObjectId(image_id), "user_id": str(current_user["_id"])})
+    result = database.get_collection("images").delete_one({"_id": ObjectId(image_id), "user_id": str(current_user["_id"])})
     # Return the result of the deletion
     return JSONResponse(content={"deleted_count": result.deleted_count})
 
 
-async def show_upgrade(request: Request, current_user: user_model.User) -> templates.TemplateResponse:
+async def show_upgrade(request: Request, current_user: user_model.User) -> templates.jinja_templates.TemplateResponse:
     user_info = {
         "username": current_user["username"],
         "email": current_user["email"],
         "balance": current_user["balance"],
     }
-    return templates.TemplateResponse("pricing.html", {"request": request, "user_info": user_info})
+    return templates.jinja_templates.TemplateResponse("pricing.html", {"request": request, "user_info": user_info})

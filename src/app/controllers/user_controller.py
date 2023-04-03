@@ -5,7 +5,7 @@ from fastapi import Request, HTTPException
 from passlib.context import CryptContext
 from fastapi.responses import JSONResponse
 
-from config.templates import templates
+from config.templates import jinja_templates
 from config.database import get_collection
 from models import user_model
 from controllers.auth_controller import create_access_token
@@ -15,7 +15,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def register(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+    return jinja_templates.TemplateResponse("register.html", {"request": request})
 
 
 def get_password_hash(password: str) -> str:

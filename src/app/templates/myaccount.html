@@ -103,7 +103,7 @@
                 const percentUsed = (memoryData.memory_usage / memoryData.max_memory_allowed) * 100;
 
                 const progressBarText = document.querySelector('.progress-text');
-                progressBarText.textContent = `Memory Usage: ${(memoryData.memory_usage / (1024 * 1024)).toFixed(2)} MB / ${(memoryData.max_memory_allowed / (1024 * 1024)).toFixed(2)} MB`;
+                progressBarText.textContent = `${(memoryData.memory_usage / (1024 * 1024)).toFixed(2)} MB / ${(memoryData.max_memory_allowed / (1024 * 1024)).toFixed(2)} MB`;
 
                 progressBar.setAttribute("aria-valuenow", percentUsed);
                 progressBar.style.width = `${percentUsed}%`;

@@ -1,0 +1,42 @@
+.social-link {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    border-radius: 50%;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.social-link:hover,
+.social-link:focus {
+    background: #ddd;
+    text-decoration: none;
+    color: #555;
+}
+
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.info-row a {
+    margin-right: 10px;
+}
+
+.info-row span {
+    font-size: 16px;
+}

@@ -1,3 +1,30 @@
+async function checkTokenAndRedirect() {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+        try {
+            const response = await fetch('/auth/token', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                },
+            });
+
+            if (!response.ok) {
+                console.log('Token is not valid');
+                localStorage.removeItem('token');
+                document.cookie = 'cookie_token' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                window.location.href = '/';
+                throw new Error('Error checking token');
+            }
+        } catch (error) {
+            console.error('Error checking token:', error);
+        }
+    }
+}
+
+
+
 async function setUserInfos() {
     const token = localStorage.getItem('token');
     try {
@@ -24,5 +51,6 @@ async function setUserInfos() {
 }
 
 window.onload = async () => {
+    await checkTokenAndRedirect();
     await setUserInfos();
 };
