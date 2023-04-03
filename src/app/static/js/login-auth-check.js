@@ -29,7 +29,7 @@ async function checkTokenAndRedirect() {
                     if (!responseBis.ok) {
                         throw new Error('Error loading home page');
                     }
-                    const homeData = await response.text();
+                    const homeData = await responseBis.text();
                     document.open();
                     document.write(homeData);
                     document.close();
@@ -45,6 +45,5 @@ async function checkTokenAndRedirect() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('Window loaded');
     checkTokenAndRedirect();
 });
