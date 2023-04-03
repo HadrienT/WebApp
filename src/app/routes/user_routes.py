@@ -38,3 +38,8 @@ async def deduct_balance_route(amount: float = Query(..., gt=0), current_user: u
 @user_router.get("/memory_usage")
 async def memory_usage_route(current_user: user_model.User = Depends(get_current_user)):
     return await user_controller.get_user_memory_usage(current_user)
+
+
+@user_router.get("/get_balance", response_class=HTMLResponse)
+async def get_balance_route(current_user: user_model.User = Depends(get_current_user)):
+    return await user_controller.get_balance(current_user)

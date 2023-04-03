@@ -159,6 +159,35 @@
 
     </script>
 
+
+    <script>async function getUserBalance() {
+            try {
+                const response = await fetch('/user/get_balance', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('An error occurred while fetching user balance.');
+                }
+
+                const balanceData = await response.json();
+                document.getElementById('user-balance').textContent = `Balance: ${balanceData.balance.toFixed(2)} Coin`;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        getUserBalance();
+    </script>
+
+
+
+
+
     <script>
         async function deductBalance(amount) {
             try {
@@ -173,7 +202,6 @@
                     throw new Error('An error occurred while deducting balance.');
                 }
 
-                // Update user balance in UI
                 getUserBalance();
                 return response;
             } catch (error) {

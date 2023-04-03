@@ -86,3 +86,7 @@ async def get_user_memory_usage(current_user: user_model.User) -> JSONResponse:
         memory_usage += image["file_size"]
 
     return {"memory_usage": memory_usage, "max_memory_allowed": current_user["storage_limit"]}
+
+
+async def get_balance(current_user: user_model.User) -> JSONResponse:
+    return JSONResponse(content={"balance": current_user["balance"]})
