@@ -19,4 +19,4 @@ RUN pip install -e . --no-cache
 EXPOSE 8000
 
 # Run the command to start the app using Uvicorn
-CMD ["uvicorn", "src.app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["python3", "src/app/run.py"]
