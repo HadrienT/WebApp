@@ -5,8 +5,7 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy the requirements files into the container
-COPY requirements.txt ./
-COPY requirements_dev.txt ./
+COPY requirements.txt setup.py pyproject.toml setup.cfg ./
 
 # Install any needed packages specified in requirements.txt and requirements_dev.txt
 RUN pip install -r requirements.txt --no-cache
