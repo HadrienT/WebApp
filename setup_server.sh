@@ -6,7 +6,7 @@ sudo apt update
 sudo apt upgrade -y
 
 # Install necessary packages
-sudo apt install -y nginx python3-venv git docker.io
+sudo apt install -y nginx git docker.io
 
 # Install Certbot
 sudo snap install --classic certbot

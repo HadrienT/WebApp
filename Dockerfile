@@ -7,12 +7,13 @@ WORKDIR /docker_root
 # Copy the requirements files into the container
 COPY requirements.txt setup.py pyproject.toml setup.cfg ./
 
+# Copy the rest of the application code into the container
+COPY src ./src
+
 # Install any needed packages specified in requirements.txt and requirements_dev.txt
 RUN pip install -r requirements.txt --no-cache
-RUN pip install -e docker_root --no-cache
+RUN pip install -e . --no-cache
 
-# Copy the rest of the application code into the container
-COPY src /app/src
 
 # Expose the port the app runs on
 EXPOSE 8000
