@@ -21,6 +21,7 @@ sudo ufw allow https
 nginx_config_file="/etc/nginx/sites-available/imageinsight.xyz"
 
 # Create Nginx configuration file
+sudo tee "$nginx_config_file" <<EOL
 server {
     listen 80;
     server_name imageinsight.xyz www.imageinsight.xyz;
