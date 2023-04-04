@@ -1,4 +1,5 @@
 #!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
 
 # Update system packages
 sudo apt update
@@ -12,7 +13,7 @@ sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
 # Setup firewall
-sudo ufw enable -y
+echo "y" | sudo ufw enable
 sudo ufw allow ssh 
 sudo ufw allow http 
 sudo ufw allow https
@@ -48,7 +49,7 @@ domain="imageinsight.xyz"
 www_domain="www.imageinsight.xyz"
 
 # Obtain SSL certificate
-sudo certbot --nginx -d "$domain" -d "$www_domain" --email tramonihadrien@gmail.com --agree-tos --no-eff-email
+echo " " | sudo certbot --nginx -d "$domain" -d "$www_domain" --email tramonihadrien@gmail.com --agree-tos --no-eff-email
 
 # Clone the Git repository
 git clone https://github.com/HadrienT/WebApp.git
