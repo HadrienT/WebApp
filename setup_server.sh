@@ -61,4 +61,6 @@ cd WebApp
 sudo docker build -t webapp_image .
 
 # Run the Docker container and map the container's port 8000 to the host's port 8000
+
 sudo docker run -d --name webapp_container -p 8000:8000 webapp_image
+docker cp .env webapp_container:/docker_root/.env
