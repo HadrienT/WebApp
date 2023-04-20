@@ -6,7 +6,7 @@ sudo apt update
 sudo apt upgrade -y
 
 # Install necessary packages
-sudo apt install -y nginx git docker.io
+sudo apt install -y nginx git docker.io tmux
 
 # Install Certbot
 sudo snap install --classic certbot
@@ -53,7 +53,7 @@ echo " " | sudo certbot --nginx -d "$domain" -d "$www_domain" --email tramonihad
 
 # Clone the Git repository
 git clone https://github.com/HadrienT/WebApp.git
-
+mv .env WebApp/.env
 # Change to the cloned repository directory
 cd WebApp
 
