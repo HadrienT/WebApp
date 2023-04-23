@@ -63,4 +63,6 @@ pip install -r requirements.txt
 pip install -e .
 
 # Start the Uvicorn server using tmux
-tmux new-session -d -s uvicorn_server 'python3 src/app/run.py'
+tmux new-session -d -s uvicorn_server
+tmux send-keys -t uvicorn_server 'source .venv/bin/activate && python3 src/app/run.py' Enter
+
