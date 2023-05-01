@@ -1,5 +1,5 @@
 import io
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from torch.utils.data import Dataset
 from typing import Any, Union
 import torch.types
@@ -18,7 +18,11 @@ class CustomDataset(Dataset[Any]):
         if idx >= self.__len__():
             raise IndexError("Index out of bounds")
 
-        image = Image.open(io.BytesIO(self.image_bytes))
+        try:
+            image = Image.open(io.BytesIO(self.image_bytes))
+        except UnidentifiedImageError:
+            # Return a placeholder image or handle the problematic image in another way
+            image = Image.new('RGB', (224, 224), color='gray')
 
         if self.transform:
             image = self.transform(image)
